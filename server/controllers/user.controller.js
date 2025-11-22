@@ -39,10 +39,7 @@ export const createUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password').sort({ created: -1 });
-    res.status(200).json({
-      count: users.length,
-      users
-    });
+    res.status(200).json(users);  // CHANGED: Return just the array, not an object
   } catch (error) {
     res.status(500).json({ 
       message: 'Error fetching users',
@@ -72,25 +69,31 @@ export const getUserById = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, isAdmin } = req.body;  // ADDED: isAdmin
     
-    const updateData = { name, email, updated: Date.now() };
-
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      updateData,
-      { new: true, runValidators: true }
-    ).select('-password');
-
+    const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ 
         message: 'User not found' 
       });
     }
 
+    // Update fields if provided
+    if (name !== undefined) user.name = name;
+    if (email !== undefined) user.email = email;
+    if (isAdmin !== undefined) user.isAdmin = isAdmin;  // ADDED: Update isAdmin
+    user.updated = Date.now();
+
+    await user.save();
+
     res.status(200).json({
       message: 'User updated successfully',
-      user
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin
+      }
     });
   } catch (error) {
     res.status(500).json({ 

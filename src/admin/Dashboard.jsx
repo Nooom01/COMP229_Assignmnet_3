@@ -1,70 +1,86 @@
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import ManageUsers from './ManageUsers';
 
-export default function Dashboard() {
-  const { user } = useAuth();
+export default function AdminDashboard() {
+  const { user, signout } = useAuth();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState('users');
+
+  const handleSignout = () => {
+    signout();
+    navigate('/');
+  };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Admin Dashboard</h1>
-      <p style={styles.welcome}>Welcome, {user?.name}!</p>
-      
-      <div style={styles.grid}>
-        <Link to="/admin/contacts" style={styles.card}>
-          <h2>Manage Contacts</h2>
-          <p>View and manage contact messages</p>
-        </Link>
-        
-        <Link to="/admin/projects" style={styles.card}>
-          <h2>Manage Projects</h2>
-          <p>Add, edit, or delete projects</p>
-        </Link>
-        
-        <Link to="/admin/qualifications" style={styles.card}>
-          <h2>Manage Qualifications</h2>
-          <p>Add, edit, or delete education records</p>
-        </Link>
+    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'space-between', 
+        alignItems: 'center',
+        marginBottom: '30px',
+        borderBottom: '2px solid #eee',
+        paddingBottom: '10px'
+      }}>
+        <h1>Admin Dashboard</h1>
+        <div>
+          <span style={{ marginRight: '20px' }}>Welcome, {user?.name}</span>
+          <button 
+            onClick={handleSignout}
+            style={{
+              padding: '8px 16px',
+              background: '#dc3545',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+
+      <div style={{ marginBottom: '20px' }}>
+        <button
+          onClick={() => setActiveTab('users')}
+          style={{
+            padding: '10px 20px',
+            margin: '0 10px 10px 0',
+            background: activeTab === 'users' ? '#007bff' : '#6c757d',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Manage Users
+        </button>
+        <button
+          onClick={() => navigate('/')}
+          style={{
+            padding: '10px 20px',
+            margin: '0 10px 10px 0',
+            background: '#28a745',
+            color: 'white',
+            border: 'none',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          Back to Site
+        </button>
+      </div>
+
+      <div style={{ 
+        background: 'white', 
+        padding: '20px', 
+        borderRadius: '8px',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}>
+        {activeTab === 'users' && <ManageUsers />}
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '40px 20px'
-  },
-  title: {
-    fontSize: '2.5rem',
-    marginBottom: '20px',
-    color: '#333',
-    textAlign: 'center'
-  },
-  welcome: {
-    fontSize: '1.2rem',
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: '40px'
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '30px',
-    marginTop: '40px'
-  },
-  card: {
-    background: 'white',
-    padding: '30px',
-    borderRadius: '10px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-    textDecoration: 'none',
-    color: '#333',
-    transition: 'transform 0.3s, box-shadow 0.3s',
-    cursor: 'pointer',
-    '&:hover': {
-      transform: 'translateY(-5px)',
-      boxShadow: '0 5px 20px rgba(0,0,0,0.15)'
-    }
-  }
-};
