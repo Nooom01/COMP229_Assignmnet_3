@@ -1,23 +1,28 @@
+// server/controllers/auth.controller.js
 import User from '../models/user.model.js';
 import jwt from 'jsonwebtoken';
 
+// Sign Up - Register a new user
 export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    // Validate required fields
     if (!name || !email || !password) {
-      return res.status(400).json({
-        message: 'Please provide all required fields: name, email, password'
+      return res.status(400).json({ 
+        message: 'Please provide all required fields: name, email, password' 
       });
     }
 
+    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({
-        message: 'User with this email already exists'
+      return res.status(400).json({ 
+        message: 'User with this email already exists' 
       });
     }
 
+    // Create new user (password will be hashed by the pre-save middleware)
     const user = new User({
       name,
       email,
@@ -26,8 +31,13 @@ export const signup = async (req, res) => {
 
     await user.save();
 
+    // Generate JWT token WITH isAdmin
     const token = jwt.sign(
-      { _id: user._id, email: user.email },
+      { 
+        _id: user._id, 
+        email: user.email,
+        isAdmin: user.isAdmin || false
+      },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -38,7 +48,8 @@ export const signup = async (req, res) => {
       user: {
         _id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        isAdmin: user.isAdmin || false
       }
     });
   } catch (error) {
@@ -49,32 +60,41 @@ export const signup = async (req, res) => {
   }
 };
 
+// Sign In - Login user
 export const signin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // Validate required fields
     if (!email || !password) {
-      return res.status(400).json({
-        message: 'Please provide email and password'
+      return res.status(400).json({ 
+        message: 'Please provide email and password' 
       });
     }
 
+    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({
-        message: 'Invalid email or password'
+      return res.status(401).json({ 
+        message: 'Invalid email or password' 
       });
     }
 
+    // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
-      return res.status(401).json({
-        message: 'Invalid email or password'
+      return res.status(401).json({ 
+        message: 'Invalid email or password' 
       });
     }
 
+    // Generate JWT token WITH isAdmin
     const token = jwt.sign(
-      { _id: user._id, email: user.email },
+      { 
+        _id: user._id, 
+        email: user.email,
+        isAdmin: user.isAdmin || false
+      },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -85,7 +105,8 @@ export const signin = async (req, res) => {
       user: {
         _id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        isAdmin: user.isAdmin || false
       }
     });
   } catch (error) {
@@ -96,8 +117,11 @@ export const signin = async (req, res) => {
   }
 };
 
+// Sign Out
 export const signout = async (req, res) => {
   try {
+    // In a stateless JWT implementation, signout is handled on the client side
+    // by removing the token from storage
     res.status(200).json({
       message: 'Signout successful. Please remove the token from client storage.'
     });
@@ -109,8 +133,11 @@ export const signout = async (req, res) => {
   }
 };
 
+// Verify Token - Check if user is authenticated
 export const verifyToken = async (req, res) => {
   try {
+    // Token verification is done in the middleware
+    // If we reach here, token is valid
     const user = await User.findById(req.user._id).select('-password');
     
     if (!user) {
@@ -121,7 +148,12 @@ export const verifyToken = async (req, res) => {
 
     res.status(200).json({
       message: 'Token is valid',
-      user
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin || false
+      }
     });
   } catch (error) {
     res.status(500).json({ 
