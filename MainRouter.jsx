@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
-import Layout from './components/Layout'
+import Layout from './src/components/Layout'  // Changed path - added /src
 import Home from './src/home'
 import About from './src/about'
 import Contact from './src/contact'
