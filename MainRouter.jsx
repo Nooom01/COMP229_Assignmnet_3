@@ -4,7 +4,7 @@ import Home from './src/Home'
 import About from './src/about'
 import Contact from './src/contact'
 import Education from './src/education'
-import Portfolio from './src/portfolio'
+import Project from './src/project'
 import Services from './src/services'
 import SignUp from './src/signup'
 import SignIn from './src/signin'
@@ -19,7 +19,7 @@ export default function MainRouter() {
         <Route index element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="education" element={<Education />} />
-        <Route path="projects" element={<Portfolio />} />
+        <Route path="project" element={<Project />} />
         <Route path="services" element={<Services />} />
         <Route path="contact" element={<Contact />} />
         <Route path="signup" element={<SignUp />} />
