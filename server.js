@@ -18,25 +18,31 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// CORS configuration with all your Vercel URLs
+// CORS configuration with pattern matching for all Vercel deployments
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
       'http://localhost:5173',
       'http://localhost:3000',
       'http://localhost:5000',
-      'https://comp-229-assignmnet-3.vercel.app',
-      'https://comp-229-assignmnet-3-git-main-naomis-projects-b5a0354c.vercel.app',
-      'https://comp-229-assignmnet-3-m8tb5xzin-naomis-projects-b5a0354c.vercel.app'
+      'https://comp-229-assignmnet-3.vercel.app'
     ];
     
-    // Allow requests with no origin (like Postman or mobile apps)
+    // Check if origin matches any allowed origin exactly
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
-    } else {
-      console.log('CORS blocked origin:', origin);
-      callback(new Error('Not allowed by CORS'));
+      return;
     }
+    
+    // Check if origin matches Vercel preview pattern
+    const vercelPreviewPattern = /^https:\/\/comp-229-assignmnet-3-[a-z0-9]+-naomis-projects-b5a0354c\.vercel\.app$/;
+    if (vercelPreviewPattern.test(origin)) {
+      callback(null, true);
+      return;
+    }
+    
+    console.log('CORS blocked origin:', origin);
+    callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -119,7 +125,7 @@ app.get('/', (req, res) => {
       users: '/api/users'
     },
     status: 'API is running successfully',
-    cors: 'CORS configured for all Vercel deployments'
+    cors: 'CORS configured for all Vercel deployments with pattern matching'
   });
 });
 
