@@ -18,24 +18,43 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Updated CORS configuration with your specific Vercel URL
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'http://localhost:5000',
-    'https://comp-229-assignmnet-3.vercel.app',  // Your specific Vercel URL
-    'https://comp-229-assignmnet-3-*.vercel.app', // For Vercel preview deployments
-    'https://*.vercel.app'
-  ],
+// CORS configuration with all your Vercel URLs
+const corsOptions = {
+  origin: function (origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:5173',
+      'http://localhost:3000',
+      'http://localhost:5000',
+      'https://comp-229-assignmnet-3.vercel.app',
+      'https://comp-229-assignmnet-3-git-main-naomis-projects-b5a0354c.vercel.app',
+      'https://comp-229-assignmnet-3-m8tb5xzin-naomis-projects-b5a0354c.vercel.app'
+    ];
+    
+    // Allow requests with no origin (like Postman or mobile apps)
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204
+};
 
+app.use(cors(corsOptions));
+
+// Handle OPTIONS method explicitly
+app.options('*', cors(corsOptions));
+
+// Other middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Portfolio';
 
 mongoose.connect(MONGODB_URI)
@@ -100,7 +119,7 @@ app.get('/', (req, res) => {
       users: '/api/users'
     },
     status: 'API is running successfully',
-    cors: 'CORS enabled for Vercel deployment'
+    cors: 'CORS configured for all Vercel deployments'
   });
 });
 
@@ -121,6 +140,7 @@ app.use((err, req, res, next) => {
   });
 });
 
+// Port configuration
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
