@@ -1,4 +1,4 @@
-export default function Project() {
+export default function Portfolio() {
   return (
     <div>
       <h1>My Portfolio Projects</h1>
