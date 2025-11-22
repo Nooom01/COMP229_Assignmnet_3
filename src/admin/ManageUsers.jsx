@@ -51,7 +51,7 @@ export default function ManageUsers() {
         { isAdmin: !currentStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      fetchUsers(); // Refresh the list
+      fetchUsers();
     } catch (err) {
       setError('Failed to update user');
     }
@@ -83,7 +83,7 @@ export default function ManageUsers() {
                   type="checkbox"
                   checked={u.isAdmin || false}
                   onChange={() => toggleAdmin(u._id, u.isAdmin)}
-                  disabled={u._id === user._id} // Can't remove own admin status
+                  disabled={u._id === user._id}
                 />
               </td>
               <td style={{ padding: '10px', textAlign: 'center' }}>
@@ -92,7 +92,7 @@ export default function ManageUsers() {
               <td style={{ padding: '10px', textAlign: 'center' }}>
                 <button
                   onClick={() => deleteUser(u._id)}
-                  disabled={u._id === user._id} // Can't delete own account
+                  disabled={u._id === user._id}
                   style={{
                     padding: '5px 10px',
                     background: u._id === user._id ? '#ccc' : '#dc3545',

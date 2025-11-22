@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 
-// API URL configuration - automatically switches between local and production
 const API_URL = window.location.hostname === 'localhost' 
   ? 'http://localhost:5000/api'
   : 'https://comp229-assignmnet-3.onrender.com/api';

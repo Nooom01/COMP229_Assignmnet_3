@@ -18,7 +18,6 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// CORS configuration with pattern matching for all Vercel deployments
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
@@ -27,20 +26,18 @@ const corsOptions = {
       'http://localhost:5000',
       'https://comp-229-assignmnet-3.vercel.app'
     ];
-    
-    // Check if origin matches any allowed origin exactly
+
     if (!origin || allowedOrigins.indexOf(origin) !== -1) {
       callback(null, true);
       return;
     }
-    
-    // Check if origin matches Vercel preview pattern
+
     const vercelPreviewPattern = /^https:\/\/comp-229-assignmnet-3-[a-z0-9]+-naomis-projects-b5a0354c\.vercel\.app$/;
     if (vercelPreviewPattern.test(origin)) {
       callback(null, true);
       return;
     }
-    
+
     console.log('CORS blocked origin:', origin);
     callback(new Error('Not allowed by CORS'));
   },
@@ -53,14 +50,11 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Handle OPTIONS method explicitly
 app.options('*', cors(corsOptions));
 
-// Other middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/Portfolio';
 
 mongoose.connect(MONGODB_URI)
@@ -99,14 +93,12 @@ mongoose.connect(MONGODB_URI)
     process.exit(1);
   });
 
-// API Routes
 app.use('/api/contacts', contactRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/qualifications', qualificationRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 
-// Root route
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Welcome to my Portfolio Application - Backend API Server',
@@ -129,7 +121,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// 404 handler for undefined routes
 app.use((req, res) => {
   res.status(404).json({ 
     message: 'Route not found',
@@ -137,7 +128,6 @@ app.use((req, res) => {
   });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({ 
@@ -146,7 +136,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Port configuration
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

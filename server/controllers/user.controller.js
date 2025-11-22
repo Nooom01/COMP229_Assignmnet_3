@@ -29,9 +29,9 @@ export const createUser = async (req, res) => {
       user: savedUser
     });
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Error creating user',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -39,11 +39,11 @@ export const createUser = async (req, res) => {
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select('-password').sort({ created: -1 });
-    res.status(200).json(users);  // CHANGED: Return just the array, not an object
+    res.status(200).json(users);
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Error fetching users',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -51,37 +51,36 @@ export const getAllUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select('-password');
-    
+
     if (!user) {
-      return res.status(404).json({ 
-        message: 'User not found' 
+      return res.status(404).json({
+        message: 'User not found'
       });
     }
 
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Error fetching user',
-      error: error.message 
+      error: error.message
     });
   }
 };
 
 export const updateUser = async (req, res) => {
   try {
-    const { name, email, isAdmin } = req.body;  // ADDED: isAdmin
-    
+    const { name, email, isAdmin } = req.body;
+
     const user = await User.findById(req.params.id);
     if (!user) {
-      return res.status(404).json({ 
-        message: 'User not found' 
+      return res.status(404).json({
+        message: 'User not found'
       });
     }
 
-    // Update fields if provided
     if (name !== undefined) user.name = name;
     if (email !== undefined) user.email = email;
-    if (isAdmin !== undefined) user.isAdmin = isAdmin;  // ADDED: Update isAdmin
+    if (isAdmin !== undefined) user.isAdmin = isAdmin;
     user.updated = Date.now();
 
     await user.save();
@@ -96,9 +95,9 @@ export const updateUser = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Error updating user',
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -108,8 +107,8 @@ export const deleteUser = async (req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
 
     if (!user) {
-      return res.status(404).json({ 
-        message: 'User not found' 
+      return res.status(404).json({
+        message: 'User not found'
       });
     }
 
@@ -117,9 +116,9 @@ export const deleteUser = async (req, res) => {
       message: 'User deleted successfully'
     });
   } catch (error) {
-    res.status(500).json({ 
+    res.status(500).json({
       message: 'Error deleting user',
-      error: error.message 
+      error: error.message
     });
   }
 };
