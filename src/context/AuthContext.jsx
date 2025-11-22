@@ -3,6 +3,11 @@ import axios from 'axios';
 
 const AuthContext = createContext();
 
+// API URL configuration - automatically switches between local and production
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000/api'
+  : 'https://comp229-assignmnet-3.onrender.com/api';
+
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -28,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/auth/verify');
+      const response = await axios.get(`${API_URL}/auth/verify`);
       setUser(response.data.user);
     } catch (error) {
       console.error('Error fetching user:', error);
@@ -42,7 +47,7 @@ export const AuthProvider = ({ children }) => {
   const signin = async (email, password) => {
     try {
       setError(null);
-      const response = await axios.post('http://localhost:5000/api/auth/signin', {
+      const response = await axios.post(`${API_URL}/auth/signin`, {
         email,
         password
       });
@@ -68,7 +73,7 @@ export const AuthProvider = ({ children }) => {
   const signup = async (name, email, password) => {
     try {
       setError(null);
-      const response = await axios.post('http://localhost:5000/api/auth/signup', {
+      const response = await axios.post(`${API_URL}/auth/signup`, {
         name,
         email,
         password

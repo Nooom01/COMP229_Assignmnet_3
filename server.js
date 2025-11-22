@@ -18,7 +18,21 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-app.use(cors());
+// Updated CORS configuration with your specific Vercel URL
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://localhost:5000',
+    'https://comp-229-assignmnet-3.vercel.app',  // Your specific Vercel URL
+    'https://comp-229-assignmnet-3-*.vercel.app', // For Vercel preview deployments
+    'https://*.vercel.app'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -60,32 +74,50 @@ mongoose.connect(MONGODB_URI)
     process.exit(1);
   });
 
+// API Routes
 app.use('/api/contacts', contactRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/qualifications', qualificationRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 
+// Root route
 app.get('/', (req, res) => {
   res.json({ 
     message: 'Welcome to my Portfolio Application - Backend API Server',
     version: '1.0.0',
     author: 'Naomi Smith',
     endpoints: {
+      auth: {
+        signup: 'POST /api/auth/signup',
+        signin: 'POST /api/auth/signin',
+        signout: 'GET /api/auth/signout',
+        verify: 'GET /api/auth/verify'
+      },
       contacts: '/api/contacts',
       projects: '/api/projects',
       qualifications: '/api/qualifications',
-      users: '/api/users',
-      auth: '/api/auth'
-    }
+      users: '/api/users'
+    },
+    status: 'API is running successfully',
+    cors: 'CORS enabled for Vercel deployment'
   });
 });
 
+// 404 handler for undefined routes
+app.use((req, res) => {
+  res.status(404).json({ 
+    message: 'Route not found',
+    requestedPath: req.path 
+  });
+});
+
+// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
+  res.status(err.status || 500).json({ 
+    message: err.message || 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err : {}
   });
 });
 
@@ -94,6 +126,7 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Visit: http://localhost:${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 export default app;
