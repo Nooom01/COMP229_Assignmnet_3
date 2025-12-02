@@ -22,7 +22,7 @@ export default function Layout() {
             <Link to="/" style={styles.navLink}>Home</Link>
             <Link to="/about" style={styles.navLink}>About</Link>
             <Link to="/education" style={styles.navLink}>Education</Link>
-            <Link to="/project" style={styles.navLink}>Projects</Link>
+            <Link to="/projects" style={styles.navLink}>Projects</Link>
             <Link to="/services" style={styles.navLink}>Services</Link>
             <Link to="/contact" style={styles.navLink}>Contact</Link>
             
