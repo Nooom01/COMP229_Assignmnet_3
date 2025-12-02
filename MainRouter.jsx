@@ -2,12 +2,12 @@ import { Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import Layout from './src/components/Layout'
 
-// Lazy load all components except Layout
+// Change all imports to lazy loading OR regular imports, not mixed
 const Home = lazy(() => import('./src/Home'))
 const About = lazy(() => import('./src/about'))
 const Contact = lazy(() => import('./src/contact'))
 const Education = lazy(() => import('./src/education'))
-const Project = lazy(() => import('./src/project'))
+const Project = lazy(() => import('./src/project'))  // Make sure this is lazy
 const Services = lazy(() => import('./src/services'))
 const SignUp = lazy(() => import('./src/signup'))
 const SignIn = lazy(() => import('./src/signin'))
