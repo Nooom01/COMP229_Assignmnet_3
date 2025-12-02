@@ -1,38 +1,43 @@
 import { Routes, Route } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
 import Layout from './src/components/Layout'
-import Home from './src/Home'
-import About from './src/about'
-import Contact from './src/contact'
-import Education from './src/education'
-import Project from './src/project'
-import Services from './src/services'
-import SignUp from './src/signup'
-import SignIn from './src/signin'
-import AdminRoute from './src/admin/AdminRoute'
-import AdminDashboard from './src/admin/Dashboard'
-import ManageUsers from './src/admin/ManageUsers'
+
+// Lazy load all components except Layout
+const Home = lazy(() => import('./src/Home'))
+const About = lazy(() => import('./src/about'))
+const Contact = lazy(() => import('./src/contact'))
+const Education = lazy(() => import('./src/education'))
+const Project = lazy(() => import('./src/project'))
+const Services = lazy(() => import('./src/services'))
+const SignUp = lazy(() => import('./src/signup'))
+const SignIn = lazy(() => import('./src/signin'))
+const AdminRoute = lazy(() => import('./src/admin/AdminRoute'))
+const AdminDashboard = lazy(() => import('./src/admin/Dashboard'))
+const ManageUsers = lazy(() => import('./src/admin/ManageUsers'))
 
 export default function MainRouter() {
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="about" element={<About />} />
-        <Route path="education" element={<Education />} />
-        <Route path="project" element={<Project />} />
-        <Route path="services" element={<Services />} />
-        <Route path="contact" element={<Contact />} />
-        <Route path="signup" element={<SignUp />} />
-        <Route path="signin" element={<SignIn />} />
-        
-        <Route path="admin" element={
-          <AdminRoute>
-            <AdminDashboard />
-          </AdminRoute>
-        }>
-          <Route path="users" element={<ManageUsers />} />
+    <Suspense fallback={<div style={{ padding: '20px', textAlign: 'center' }}>Loading...</div>}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
+          <Route path="education" element={<Education />} />
+          <Route path="projects" element={<Project />} />
+          <Route path="services" element={<Services />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="signup" element={<SignUp />} />
+          <Route path="signin" element={<SignIn />} />
+          
+          <Route path="admin" element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }>
+            <Route path="users" element={<ManageUsers />} />
+          </Route>
         </Route>
-      </Route>
-    </Routes>
+      </Routes>
+    </Suspense>
   )
 }
