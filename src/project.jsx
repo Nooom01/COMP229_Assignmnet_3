@@ -1,31 +1,49 @@
 export default function Project() {
+  const projectsData = [
+    {
+      title: "Bug Smash",
+      description: "Simple mini game with timer built with C# Windows Forms.",
+      images: ["/bugGame.png"],
+      tags: ["C#", "Windows Forms", "Game Dev"]
+    },
+    {
+      title: "Calendar Application",
+      description: "Calendar with customizable features for scheduling and time management.",
+      images: ["/scheduleInfo.png", "/scheduleResult.png"],
+      tags: ["JavaScript", "UI/UX", "Scheduling"]
+    },
+    {
+      title: "Dynamic Table",
+      description: "Adjustable dynamic table with sorting and filtering capabilities.",
+      images: ["/table.png"],
+      tags: ["JavaScript", "Data Display", "Interactive"]
+    }
+  ];
+
   return (
     <div className="projects-container">
       <h1>My Projects</h1>
+      <p className="section-intro">A showcase of my work and personal projects</p>
 
-      <div className="project-section">
-        <img src="/bugGame.png" alt="Bug Smash Game" />
-        <div className="project-description">
-          <h2>Bug Smash</h2>
-          <p>Simple mini game with timer built with C# Windows Forms.</p>
-        </div>
-      </div>
-
-      <div className="project-section">
-        <img src="/scheduleInfo.png" alt="Calendar Info" />
-        <img src="/scheduleResult.png" alt="Calendar Result" />
-        <div className="project-description">
-          <h2>Calendar Application</h2>
-          <p>Calendar with customizable features for scheduling and time management.</p>
-        </div>
-      </div>
-
-      <div className="project-section">
-        <img src="/table.png" alt="Dynamic Table" />
-        <div className="project-description">
-          <h2>Dynamic Table</h2>
-          <p>Adjustable dynamic table with sorting and filtering capabilities.</p>
-        </div>
+      <div className="projects-grid">
+        {projectsData.map((project, index) => (
+          <div key={index} className="project-card">
+            <div className="project-images">
+              {project.images.map((img, imgIndex) => (
+                <img key={imgIndex} src={img} alt={`${project.title} screenshot ${imgIndex + 1}`} />
+              ))}
+            </div>
+            <div className="project-content">
+              <h2>{project.title}</h2>
+              <p>{project.description}</p>
+              <div className="project-tags">
+                {project.tags.map((tag, tagIndex) => (
+                  <span key={tagIndex} className="tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       <style>{`
@@ -37,44 +55,84 @@ export default function Project() {
 
         .projects-container h1 {
           font-size: 2.5em;
-          margin-bottom: 40px;
+          margin-bottom: 10px;
           color: #333;
           text-align: center;
         }
 
-        .project-section {
-          margin-bottom: 50px;
-          padding-bottom: 40px;
-          border-bottom: 2px solid #e0e0e0;
+        .section-intro {
+          font-size: 1.2em;
+          color: #666;
+          text-align: center;
+          margin-bottom: 40px;
         }
 
-        .project-section:last-child {
-          border-bottom: none;
+        .projects-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 30px;
         }
 
-        .project-section img {
+        .project-card {
+          background: white;
+          border: 2px solid #e0e0e0;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .project-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .project-images {
+          display: flex;
+          gap: 10px;
+          padding: 20px;
+          background: #f9f9f9;
+          overflow-x: auto;
+        }
+
+        .project-images img {
           width: 100%;
-          max-width: 800px;
+          max-width: 400px;
           height: auto;
           border-radius: 8px;
-          margin-bottom: 20px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          border: 1px solid #e0e0e0;
         }
 
-        .project-description {
-          margin-top: 20px;
+        .project-content {
+          padding: 25px;
         }
 
-        .project-description h2 {
-          font-size: 1.8em;
+        .project-content h2 {
+          font-size: 1.5em;
           color: #333;
-          margin-bottom: 15px;
+          margin: 0 0 15px 0;
         }
 
-        .project-description p {
+        .project-content p {
           font-size: 1.1em;
           color: #666;
           line-height: 1.6;
+          margin: 0 0 20px 0;
+        }
+
+        .project-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .tag {
+          background: #646cff;
+          color: white;
+          padding: 5px 12px;
+          border-radius: 15px;
+          font-size: 0.85em;
+          font-weight: 500;
         }
 
         @media (max-width: 768px) {
@@ -82,8 +140,21 @@ export default function Project() {
             font-size: 2em;
           }
 
-          .project-description h2 {
-            font-size: 1.5em;
+          .project-images {
+            flex-direction: column;
+            align-items: center;
+          }
+
+          .project-images img {
+            max-width: 100%;
+          }
+
+          .project-content h2 {
+            font-size: 1.3em;
+          }
+
+          .project-content {
+            padding: 20px;
           }
         }
       `}</style>
